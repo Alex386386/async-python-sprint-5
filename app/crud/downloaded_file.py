@@ -6,19 +6,19 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
-from app.models import User, DownloadedFile
+from app.models import DownloadedFile
 
 
 class CRUDDownloadedFile(CRUDBase):
 
     async def get_my(
             self,
-            user: User,
+            user_id: UUID4,
             session: AsyncSession,
     ) -> List[DownloadedFile]:
         files = await session.execute(
             select(DownloadedFile).where(
-                DownloadedFile.user_id == user.id
+                DownloadedFile.user_id == user_id
             )
         )
         return files.scalars().all()

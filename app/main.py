@@ -23,6 +23,7 @@ async def startup():
 @app.get(
     '/ping',
     tags=['ping'],
+    description='Проверить подключение к базе данных.',
 )
 async def ping_db(session: AsyncSession = Depends(get_async_session)):
     try:

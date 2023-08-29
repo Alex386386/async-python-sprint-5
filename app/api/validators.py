@@ -1,3 +1,4 @@
+import os
 from http import HTTPStatus
 from pathlib import Path
 
@@ -8,24 +9,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.utils import BASE_DIR
 from app.crud.downloaded_file import downloaded_file_crud
 from app.models import DownloadedFile, User
-
-
-def check_path_correct(
-        file_location: Path,
-        filename: str,
-) -> Path:
-    if str(file_location).endswith('/'):
-        return file_location / filename
-    elif not str(file_location).endswith('/'):
-        last_element = str(file_location).split('/')[-1]
-        if '.' in last_element:
-            directories = str(file_location).split('/')
-            directories.pop()
-            file_location = '/'.join(directory for directory in directories)
-            return Path(file_location)
-        if last_element != filename:
-            file_location = file_location / filename
-    return file_location
 
 
 def path_validation(
@@ -84,3 +67,25 @@ async def check_unique_file_name(
             status_code=HTTPStatus.BAD_REQUEST,
             detail='Объект с таким именем уже существует',
         )
+
+
+def parameters_were_not_provided():
+    raise HTTPException(
+        status_code=HTTPStatus.BAD_REQUEST,
+        detail='Необходимо предоставить либо путь к файлу, либо id файла!'
+    )
+
+
+def check_exist_file(file_location):
+    if not os.path.isfile(file_location):
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Объект по данному адресу не существует!'
+        )
+
+
+def object_is_not_exist():
+    raise HTTPException(
+        status_code=HTTPStatus.BAD_REQUEST,
+        detail='Файла с таким id не существует'
+    )

@@ -2,7 +2,7 @@
 
 Revision ID: 01
 Revises: 
-Create Date: 2023-08-27 19:09:52.434128
+Create Date: 2023-08-29 09:45:13.709619
 
 """
 import fastapi_users_db_sqlalchemy
@@ -34,10 +34,10 @@ def upgrade():
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('path', sa.String(), nullable=True),
+    sa.Column('path', sa.String(length=100), nullable=True),
     sa.Column('size', sa.Integer(), nullable=True),
     sa.Column('is_downloadable', sa.Boolean(), nullable=False),
-    sa.Column('user_id', sqlalchemy_utils.types.uuid.UUIDType(), nullable=True),
+    sa.Column('user_id', sqlalchemy_utils.types.uuid.UUIDType(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='fk_shorturl_user_id_user'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id'),
